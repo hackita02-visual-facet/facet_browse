@@ -1,0 +1,12 @@
+{% for f in object.facet_set.all %}
+    <p>
+        <strong>{{ f.name }}</strong>
+        <table>
+        {% for fc in f.facetvalue_set.all %}
+            <tr>
+            <td>{{ fc.key }}</td><td>{{ fc.count }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </p>
+{% endfor %}

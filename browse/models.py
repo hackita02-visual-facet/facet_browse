@@ -1,4 +1,3 @@
-import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -8,12 +7,16 @@ from facet_core import primo
 
 class FacetQuery(models.Model):
     query = models.TextField()
-    facets = models.TextField()
 
 
     def get_facets(self):
         facets = primo.facet_query(self.query)
-        self.facets = json.dumps(facets)
+
+        for f_name,fs in facets.items():
+            f_obj = Facet.objects.create(name=f_name,query=self)
+
+            for k,v in fs.items():
+                FacetValue.objects.create(facet=f_obj,key=k,count=v)
 
     def get_absolute_url(self):
         return reverse("query", args=(self.pk,))
@@ -22,8 +25,27 @@ class FacetQuery(models.Model):
         try:
             o =  FacetQuery.objects.get(query=self.query)
             self.pk = o.pk
-            self.facets = o.facets
         except ObjectDoesNotExist:
-            self.get_facets()
             super().save(force_insert, force_update, using, update_fields)
+            self.get_facets()
+
+    def __str__(self):
+        return self.query
+
+class Facet(models.Model):
+    name = models.CharField(max_length=100)
+    query = models.ForeignKey(FacetQuery)
+
+    def __str__(self):
+        return "Query: {} - Facet: {}".format(self.query.query,self.name)
+
+class FacetValue(models.Model):
+    facet = models.ForeignKey(Facet)
+
+    key = models.CharField(max_length=100)
+    count = models.IntegerField()
+
+    def __str__(self):
+        return "Facet: {} - (Key: {}, Count: {})".format(self.face.name,
+                                                         self.key,self.count)
 

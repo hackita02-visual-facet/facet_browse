@@ -22,3 +22,4 @@ class QueryDetailView(DetailView):
         return QueryForm(initial={
             'query': self.get_object().query
         })
+

@@ -6,7 +6,7 @@ from django.db import models
 from facet_core import primo
 
 class FacetQuery(models.Model):
-    query = models.TextField()
+    query = models.CharField( max_length=150)
 
 
     def get_facets(self):

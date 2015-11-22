@@ -23,6 +23,11 @@ class FacetQuery(models.Model):
     def __str__(self):
         return self.query
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        self.get_facets()
+
+
 class Facet(models.Model):
     query = models.ForeignKey(FacetQuery, related_name='facets')
     name = models.CharField(max_length=100)

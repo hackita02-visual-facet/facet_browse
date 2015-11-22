@@ -7,10 +7,13 @@ from facet_core import primo
 
 class FacetQuery(models.Model):
     query = models.CharField( max_length=150)
+    total_hits = models.IntegerField()
 
     def get_facets(self):
-        facets = primo.facet_query(self.query)
+        res = primo.facet_query(self.query, query_total=True)
+        self.total_hits = res['total']
 
+        facets = res['facets']
         for name, values in facets.items():
             f = self.facets.create(name=name)
 

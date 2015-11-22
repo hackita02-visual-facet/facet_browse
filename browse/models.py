@@ -24,13 +24,18 @@ class FacetQuery(models.Model):
         return "Query: {}, Total hits: {}".format(self.query,self.total_hits)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        res = primo.facet_query(self.query, query_total=True)
 
-        self.total_hits = res['total']
+        try:
+            o = FacetQuery.objects.get(query=self.query)
+            self.pk = o.pk
+        except ObjectDoesNotExist:
+            res = primo.facet_query(self.query, query_total=True)
 
-        super().save(force_insert, force_update, using, update_fields)
+            self.total_hits = res['total']
 
-        self.save_facets(res['facets'])
+            super().save(force_insert, force_update, using, update_fields)
+
+            self.save_facets(res['facets'])
 
 
 class Facet(models.Model):

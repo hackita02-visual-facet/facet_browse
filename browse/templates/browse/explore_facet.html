@@ -2,19 +2,25 @@
 <div class="row">
     <div class="col-md-3">
         <ul class="list-unstyled">
+            <li><a href="{% url "query" query.pk %}">Query Overview</a></li>
+            <hr/>
+            <p class="text-muted">Query facets:</p>
             {% for f in query.facets.all %}
             <li><a href="{% url "facet" f.pk %}">{{ f.name }}</a></li>
             {% endfor %}
         </ul>
     </div>
     <div class="col-md-9">
+        <dl class="dl-horizontal bg-info">
+            <dt>Query submitted:</dt>
+            <dd>{{ query.query   }}</dd>
+            <dt># results:</dt>
+            <dd>{{ query.total_hits }}</dd>
+        </dl>
         {% if facet != None %}
-            {{ facet }}
-            {% for kv in facet.values.all %}
-                {{ kv.key }} - {{ kv.count }}
-            {% endfor %}
+            {% include "browse/explore_one_facet.html" %}
         {% else %}
-            {{ query }}
+            {% include "browse/explore_query.html" %}
         {% endif %}
     </div>
 

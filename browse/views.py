@@ -24,6 +24,23 @@ class QueryDetailView(DetailView):
 class FacetDetailView(DetailView):
     model = models.Facet
 
+    def num_keys(self):
+        o = self.get_object()
+        return len(o.values.all())
+
+    def count_total(self):
+        o = self.get_object()
+        counts = [k.count for k in o.values.all()]
+        return sum(counts)
+
+    def top_n(self,n=10):
+        o = self.get_object()
+        kv = o.values.all()
+
+        n = n if len(kv) >= n else len(kv)
+        top = sorted(kv,key=lambda x:x.count,reverse=True)[:n]
+
+        return top
 
 class QueryListView(ListView):
     model = models.FacetQuery

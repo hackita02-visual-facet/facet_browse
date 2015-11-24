@@ -1,0 +1,21 @@
+<dl class="dl-horizontal bg-success">
+    <dt>Facet label:</dt>
+    <dd>{{ facet.name }}</dd>
+    <dt># facet keys:</dt>
+    <dd>{{ view.num_keys }}</dd>
+    <dt>Total counts:</dt>
+    <dd>{{ view.count_total }}</dd>
+</dl>
+
+<table class="table table-condensed">
+    <tr>
+        <th>Key</th>
+        <th>Count</th>
+    </tr>
+    {% for kv in view.top_n %}
+        <tr>
+            <td>{{ kv.key }}</td>
+            <td>{{ kv.count }}</td>
+        </tr>
+    {% endfor %}
+</table>

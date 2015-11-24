@@ -1,3 +1,4 @@
+
 from django import forms
 from django.views.generic import CreateView, DetailView, ListView
 from . import models
@@ -20,6 +21,18 @@ class QueryCreateView(CreateView):
 class QueryDetailView(DetailView):
     model = models.FacetQuery
 
+    def max_coverage(self):
+        o = self.get_object()
+
+        r = []
+        for facet in o.facets.all():
+            coverage = sum([k.count for k in facet.values.all()])
+            r.append({
+                "label"   :   facet.name,
+                "value" :   coverage
+            })
+
+        return r
 
 class FacetDetailView(DetailView):
     model = models.Facet

@@ -7,6 +7,39 @@
     <dd>{{ view.count_total }}</dd>
 </dl>
 
+{% if facet.name == "creationdate" %}
+
+{% else %}
+
+    <div id='chart'>
+      <svg style='height:500px'> </svg>
+    </div>
+
+    <script type='text/javascript'>
+        nv.addGraph(function() {
+          var chart = nv.models.pieChart()
+              .x(function(d) { return d.label })
+              .y(function(d) { return d.value })
+              .showLabels(true);
+
+            d3.select("#chart svg")
+                .datum([
+                    {% for kv in view.top_n %}
+                        {
+                            "label" :   "{{ kv.key }}",
+                            "value" :   "{{ kv.count }}"
+                        },
+                    {% endfor %}
+                ])
+                .transition().duration(350)
+                .call(chart);
+
+          return chart;
+        });
+    </script>
+
+{% endif %}
+
 <table class="table table-condensed">
     <tr>
         <th>Key</th>

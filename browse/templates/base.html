@@ -2,12 +2,17 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    {% block includes %}
-    {% endblock %}
+
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <link href="//cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css" rel="stylesheet">
+    <script src="//cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js"></script>
+
 </head>
 <body>
 <div class="container">

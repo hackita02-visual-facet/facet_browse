@@ -3,7 +3,15 @@
 
 
 {% block content %}
+<div class="jumbotron">
+    <h3>Query Primo:</h3>
+    <form class="form" method="post" action="{% url "add_query" %}">
+        {% csrf_token %}
 
-    {% include "browse/query_form.html" %}
+        {% bootstrap_form form %}
 
+        {% buttons submit="Submit"%}
+    {% endbuttons %}
+    </form>
+</div>
 {% endblock %}

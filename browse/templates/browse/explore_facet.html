@@ -1,0 +1,21 @@
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="list-unstyled">
+            {% for f in query.facets.all %}
+            <li><a href="{% url "facet" f.pk %}">{{ f.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-9">
+        {% if facet != None %}
+            {{ facet }}
+            {% for kv in facet.values.all %}
+                {{ kv.key }} - {{ kv.count }}
+            {% endfor %}
+        {% else %}
+            {{ query }}
+        {% endif %}
+    </div>
+
+</div>

@@ -1,7 +1,5 @@
 from django import forms
-from django.forms import TextInput
-from django.views.generic import CreateView, DetailView
-
+from django.views.generic import CreateView, DetailView, ListView
 from . import models
 
 class QueryForm(forms.ModelForm):
@@ -25,3 +23,7 @@ class QueryDetailView(DetailView):
 
 class FacetDetailView(DetailView):
     model = models.Facet
+
+
+class QueryListView(ListView):
+    model = models.FacetQuery

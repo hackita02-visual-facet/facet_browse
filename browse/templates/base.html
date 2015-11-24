@@ -6,16 +6,17 @@
 <head>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    {% block includes %}
+    {% endblock %}
 </head>
 <body>
 <div class="container">
-
-    <p>
-        <strong><a href="{% url "add_query" %}">Facet Browse</a></strong>
-    </p>
+    <ul class="nav nav-pills">
+        <li role="presentation"><a href="{% url "add_query" %}">Facet Browse</a></li>
+        <li role="presentation"><a href="{% url "list_queries" %}">Cached Queries</a></li>
+    </ul>
 
     <hr/>
-
 
     {% block content %}
         CONTENT GOES HERE

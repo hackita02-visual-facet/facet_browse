@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+<div class="container">
+
+    <p>
+        <strong><a href="{% url "add_query" %}">Facet Browse</a></strong>
+    </p>
+
+    <hr/>
+
+
+    {% block content %}
+        CONTENT GOES HERE
+    {% endblock %}
+
+</div>
+
+</body>
+</html>
+

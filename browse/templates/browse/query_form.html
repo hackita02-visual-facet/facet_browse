@@ -1,0 +1,10 @@
+{% load bootstrap3 %}
+
+<form class="form form-inline" method="post" action="{% url "add_query" %}">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+
+    {% buttons submit="Submit"%}
+    {% endbuttons %}
+</form>

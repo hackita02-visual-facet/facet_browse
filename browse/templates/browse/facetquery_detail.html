@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+
+{% block content %}
+
+
+    {{ object }}
+
+    <br/>
+
+    {% for o in object.facets.all %}
+        <h4>{{ o.name }}</h4>
+        <h4><a href="{% url "facet" o.pk %}">link</a></h4>
+    {% endfor %}
+
+
+
+
+{#    {% include "browse/facets_table.html" %}#}
+
+{% endblock %}

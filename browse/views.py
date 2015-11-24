@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import TextInput
 from django.views.generic import CreateView, DetailView
 
 from . import models
@@ -9,6 +10,9 @@ class QueryForm(forms.ModelForm):
         fields = (
             'query',
         )
+        labels = {
+            'query' :   ''
+        }
 
 class QueryCreateView(CreateView):
     model = models.FacetQuery
@@ -18,8 +22,6 @@ class QueryCreateView(CreateView):
 class QueryDetailView(DetailView):
     model = models.FacetQuery
 
-    def form(self):
-        return QueryForm(initial={
-            'query': self.get_object().query
-        })
 
+class FacetDetailView(DetailView):
+    model = models.Facet

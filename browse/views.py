@@ -46,12 +46,20 @@ class FacetDetailView(DetailView):
         counts = [k.count for k in o.values.all()]
         return sum(counts)
 
-    def top_n(self,n=10):
+    def value_sorted(self):
         o = self.get_object()
         kv = o.values.all()
 
-        n = n if len(kv) >= n else len(kv)
-        top = sorted(kv,key=lambda x:x.count,reverse=True)[:n]
+        top = sorted(kv,key=lambda x:x.count,reverse=True)
+
+        return top
+
+    def key_sorted_top10(self):
+        kv = self.value_sorted()
+
+        n = 10 if len(kv) >= 10 else len(kv)
+
+        top = sorted(kv,key=lambda x:x.key)[:n]
 
         return top
 

@@ -5,10 +5,9 @@
 "use strict";
 
 (function () {
-    console.log("this1",this)
+
     var vis = {
         choose_facet: function(facet_data) {
-            console.log("this2",this)
                 return vis.decide(facet_data);
                 //return "creationdate";
             },
@@ -76,5 +75,5 @@
         }
     };
 
-    window.facetVis = vis
-})()
+    this.facetVis = vis
+}).call(this)

@@ -13,10 +13,11 @@
         var facets_data = {{ view.facets_data | safe  }};
 
         $(document).ready(function() {
-            var chosen_facet = choose_facet(facets_data);
+
+            var chosen_facet = facetVis.choose_facet(facets_data);
 
             $("#chosen_name").text(chosen_facet);
-            render_facet(chosen_facet,facets_data[chosen_facet],"#facet svg")
+            facetVis.render_facet(chosen_facet,facets_data[chosen_facet],"#facet svg")
         })
     </script>
 

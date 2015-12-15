@@ -75,8 +75,8 @@ class FacetsRenderView(DetailView):
     def facets_data(self):
         fd = {}
         for facet in self.get_object().facets.all():
-            fkv = fd[facet.name] = {}
+            fkv = fd[facet.name] = []
             for kv in facet.values.all():
-                fkv[kv.key] = kv.count
+                fkv.append({'label':kv.key,'value':kv.count})
 
         return fd

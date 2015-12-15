@@ -2,10 +2,22 @@
 
 {% block content %}
 
+    <h3>Primary facet: <span id="chosen_name"></span></h3>
+
+    <div id="facet">
+        <svg style="height:500px"></svg>
+    </div>
+
     <script type="application/javascript">
         var total_hits = {{ object.total_hits }}
         var facets_data = {{ view.facets_data | safe  }};
+
+        $(document).ready(function() {
+            var chosen_facet = choose_facet(facets_data);
+
+            $("#chosen_name").text(chosen_facet);
+            render_facet(chosen_facet,facets_data[chosen_facet],"#facet svg")
+        })
     </script>
-    {{ object }}
 
 {% endblock %}

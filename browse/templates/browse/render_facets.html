@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <script type="application/javascript">
+        var total_hits = {{ object.total_hits }}
+        var facets_data = {{ view.facets_data | safe  }};
+    </script>
+    {{ object }}
+
+{% endblock %}

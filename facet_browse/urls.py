@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^queries$',views.QueryListView.as_view(),name="list_queries"),
     url(r'^query/(?P<pk>\d+)',views.QueryDetailView.as_view(),name="query"),
     url(r'^facet/(?P<pk>\d+)',views.FacetDetailView.as_view(),name="facet"),
+    url(r'^render/(?P<pk>\d+)',views.FacetsRenderView.as_view(),name="render")
 ]

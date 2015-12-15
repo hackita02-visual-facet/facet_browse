@@ -65,3 +65,18 @@ class FacetDetailView(DetailView):
 
 class QueryListView(ListView):
     model = models.FacetQuery
+
+
+class FacetsRenderView(DetailView):
+    model = models.FacetQuery
+
+    template_name = "browse/render_facets.html"
+
+    def facets_data(self):
+        fd = {}
+        for facet in self.get_object().facets.all():
+            fkv = fd[facet.name] = {}
+            for kv in facet.values.all():
+                fkv[kv.key] = kv.count
+
+        return fd

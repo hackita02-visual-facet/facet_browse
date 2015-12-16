@@ -8,25 +8,34 @@
 
     var vis = {
         choose_facet: function(facet_data) {
-                return vis.decide(facet_data);
+                return decide(facet_data);
                 //return "creationdate";
             },
 
-        decide: function(facet_data) {
+        render_facet: function(name,data,selector) {
+            if (name == "creationdate") {
+                render_creationdate(data, selector)
+            } else {
+                render_other(data, selector)
+            }
+        }};
+
+        function decide(facet_data) {
                 var num_facets = Object.keys(facet_data).length;
                 var idx = Math.floor(Math.random()*num_facets);
 
                 console.log("Idx: ",idx);
                 return Object.keys(facet_data)[idx];
-            },
-        render_facet: function(name,data,selector) {
-            if (name == "creationdate") {
-                vis.render_creationdate(data, selector)
-            } else {
-                vis.render_other(data, selector)
-            }
-        },
-        render_creationdate: function(data,selector) {
+        }
+
+        function render_creationdate(data,selector) {
+
+            //Pick the 10 most populous years
+            data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
+
+            //Now sort by year
+            data = _.sortBy(data,"label");
+
             nv.addGraph(function () {
                 var chart = nv.models.discreteBarChart()
                     .x(function (d) {
@@ -36,9 +45,9 @@
                         return d.value
                     })
                     .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
-                    .tooltips(false)        //Don't show tooltips
                     .showValues(true);       //...instead, show the bar value right on top of each bar.
 
+                chart.tooltip.enabled(false); //Don't show tooltips
 
                 d3.select(selector)
                     .datum([
@@ -53,8 +62,12 @@
 
                 return chart;
             });
-        },
-        render_other: function(data,selector) {
+        }
+
+        function render_other(data,selector) {
+
+            data = _.sortBy(data,function(d) {return d.value;}).slice(0,10)
+
             nv.addGraph(function () {
                 var chart = nv.models.pieChart()
                     .x(function (d) {
@@ -65,6 +78,8 @@
                     })
                     .showLabels(true);
 
+                chart.tooltip.enabled(false);
+
                 d3.select(selector)
                     .datum(data)
                     .transition().duration(350)
@@ -73,7 +88,6 @@
                 return chart;
             });
         }
-    };
 
     this.facetVis = vis
-}).call(this)
+}).call(this);

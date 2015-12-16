@@ -2,10 +2,11 @@
 
 {% block content %}
 
-    <h3>Primary facet: <span id="chosen_name"></span></h3>
+    <h3>Chosen facet: <span id="chosen_name"></span></h3>
 
     <div id="facet">
-        <svg style="height:500px"></svg>
+        <svg id="svg0" style="height:500px"></svg>
+        <svg id="svg1" style="height:500px"></svg>
     </div>
 
     <script type="application/javascript">
@@ -14,11 +15,15 @@
 
         $(document).ready(function() {
 
-            var chosen_facet = facetVis.choose_facet(facets_data);
+            var ranked_facets = facetVis.rank_facets(facets_data,total_hits);
+            console.log(ranked_facets);
+            var chosen_facet = ranked_facets[0];
 
             $("#chosen_name").text(chosen_facet);
-            facetVis.render_facet(chosen_facet,facets_data[chosen_facet],"#facet svg")
+            facetVis.render_facet(chosen_facet,facets_data[chosen_facet],"#svg0");
+            facetVis.render_facet(chosen_facet,facets_data[ranked_facets[1]],"#svg1");
         })
+
     </script>
 
     <a href="{% url "query" object.pk %}">Back to overview</a>

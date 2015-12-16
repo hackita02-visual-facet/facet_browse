@@ -5,7 +5,7 @@
             <li><a href="{% url "query" query.pk %}">Query Overview</a></li>
             <hr/>
             <p class="text-muted">Query facets:</p>
-            {% for f in query.facets.all %}
+            {% for f in query.facets.all|dictsort:"name" %}
             <li><a href="{% url "facet" f.pk %}">{{ f.name }}</a></li>
             {% endfor %}
         </ul>

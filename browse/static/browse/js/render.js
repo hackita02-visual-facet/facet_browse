@@ -10,15 +10,31 @@
         choose_facet: function(facet_data) {
                 return decide(facet_data);
                 //return "creationdate";
-            },
+        },
 
         render_facet: function(name,data,selector) {
-            if (name == "creationdate") {
-                render_creationdate(data, selector)
-            } else {
-                render_other(data, selector)
-            }
-        }};
+                if (name == "creationdate") {
+                    render_creationdate(data, selector)
+                } else {
+                    render_other(data, selector)
+                }
+        },
+        rank_facets: function(all_facets,total_hits) {
+
+            var coverage = [];
+            _.each(all_facets,function(v,k) {
+                coverage.push( {
+                    label : k,
+                    value: _.reduce(_.pluck(v,"value"),function(memo, num){ return memo + num; }, 0)
+                    });
+            });
+
+            console.log(coverage)
+            var sorted = _.sortBy(coverage,function(o) { return -o.value;});
+            return _.pluck(sorted,"label");
+        }
+
+    };
 
         function decide(facet_data) {
                 var num_facets = Object.keys(facet_data).length;

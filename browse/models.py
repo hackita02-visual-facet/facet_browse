@@ -14,8 +14,11 @@ class FacetQuery(models.Model):
         for name, values in facets.items():
             f = self.facets.create(name=name)
 
-            for k, v in values.items():
-                f.values.create(key=k, count=v)
+            f.values.bulk_create([
+                FacetValue(facet=f,key=k,count=v) for k,v in values.items()
+            ])
+            # for k, v in values.items():
+            #     f.values.create(key=k, count=v)
 
     def get_absolute_url(self):
         return reverse("query", args=(self.pk,))

@@ -36,74 +36,74 @@
 
     };
 
-        function decide(facet_data) {
-                var num_facets = Object.keys(facet_data).length;
-                var idx = Math.floor(Math.random()*num_facets);
+    function decide(facet_data) {
+            var num_facets = Object.keys(facet_data).length;
+            var idx = Math.floor(Math.random()*num_facets);
 
-                console.log("Idx: ",idx);
-                return Object.keys(facet_data)[idx];
-        }
+            console.log("Idx: ",idx);
+            return Object.keys(facet_data)[idx];
+    }
 
-        function render_creationdate(data,selector) {
+    function render_creationdate(data,selector) {
 
-            //Pick the 10 most populous years
-            data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
+        //Pick the 10 most populous years
+        data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
 
-            //Now sort by year
-            data = _.sortBy(data,"label");
+        //Now sort by year
+        data = _.sortBy(data,"label");
 
-            nv.addGraph(function () {
-                var chart = nv.models.discreteBarChart()
-                    .x(function (d) {
-                        return d.label
-                    })    //Specify the data accessors.
-                    .y(function (d) {
-                        return d.value
-                    })
-                    .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
-                    .showValues(true);       //...instead, show the bar value right on top of each bar.
+        nv.addGraph(function () {
+            var chart = nv.models.discreteBarChart()
+                .x(function (d) {
+                    return d.label
+                })    //Specify the data accessors.
+                .y(function (d) {
+                    return d.value
+                })
+                .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                .showValues(true);       //...instead, show the bar value right on top of each bar.
 
-                chart.tooltip.enabled(false); //Don't show tooltips
+            chart.tooltip.enabled(false); //Don't show tooltips
 
-                d3.select(selector)
-                    .datum([
-                            {
-                                values: data
-                            }
-                        ]
-                    )
-                    .call(chart);
+            d3.select(selector)
+                .datum([
+                        {
+                            values: data
+                        }
+                    ]
+                )
+                .call(chart);
 
-                nv.utils.windowResize(chart.update);
+            nv.utils.windowResize(chart.update);
 
-                return chart;
-            });
-        }
+            return chart;
+        });
+    }
 
-        function render_other(data,selector) {
+    function render_other(data,selector) {
 
-            data = _.sortBy(data,function(d) {return d.value;}).slice(0,10)
+        data = _.sortBy(data,function(d) {return d.value;}).slice(0,10)
 
-            nv.addGraph(function () {
-                var chart = nv.models.pieChart()
-                    .x(function (d) {
-                        return d.label
-                    })
-                    .y(function (d) {
-                        return d.value
-                    })
-                    .showLabels(true);
+        nv.addGraph(function () {
+            var chart = nv.models.pieChart()
+                .x(function (d) {
+                    return d.label
+                })
+                .y(function (d) {
+                    return d.value
+                })
+                .showLabels(true);
 
-                chart.tooltip.enabled(false);
+            chart.tooltip.enabled(false);
 
-                d3.select(selector)
-                    .datum(data)
-                    .transition().duration(350)
-                    .call(chart);
+            d3.select(selector)
+                .datum(data)
+                .transition().duration(350)
+                .call(chart);
 
-                return chart;
-            });
-        }
+            return chart;
+        });
+    }
 
-    this.facetVis = vis
-}).call(this);
+    window.facetVis = vis
+})();

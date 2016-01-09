@@ -7,9 +7,10 @@ from facet_core import primo
 
 class FacetQuery(models.Model):
     query = models.CharField( max_length=150)
+    query_facets = models.TextField()
     total_hits = models.IntegerField()
 
-    def save_facets(self,facets):
+    def _save_facets(self,facets):
 
         for name, values in facets.items():
             f = self.facets.create(name=name)
@@ -17,8 +18,12 @@ class FacetQuery(models.Model):
             f.values.bulk_create([
                 FacetValue(facet=f,key=k,count=v) for k,v in values.items()
             ])
-            # for k, v in values.items():
-            #     f.values.create(key=k, count=v)
+
+    def _facet_pairs(self):
+        pass
+
+    def _canonize_facets(self):
+        pass
 
     def get_absolute_url(self):
         return reverse("query", args=(self.pk,))
@@ -29,16 +34,19 @@ class FacetQuery(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
         try:
-            o = FacetQuery.objects.get(query=self.query)
+            o = FacetQuery.objects.get(query=self.query,query_facets=self.query_facets)
             self.pk = o.pk
         except ObjectDoesNotExist:
-            res = primo.facet_query(self.query, query_total=True)
+            res = primo.facet_query(self.query,
+                                    self._facet_pairs(),
+                                    query_total=True)
 
+            self._canonize_facets()
             self.total_hits = res['total']
 
             super().save(force_insert, force_update, using, update_fields)
 
-            self.save_facets(res['facets'])
+            self._save_facets(res['facets'])
 
 
 class Facet(models.Model):

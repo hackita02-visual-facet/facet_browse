@@ -1,3 +1,4 @@
+import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -19,17 +20,28 @@ class FacetQuery(models.Model):
                 FacetValue(facet=f,key=k,count=v) for k,v in values.items()
             ])
 
-    def _facet_pairs(self):
-        pass
+    def deserialize_facet_ids(self):
+        return json.loads(self.query_facets) if self.query_facets else []
 
-    def _canonize_facets(self):
-        pass
+    @staticmethod
+    def serialize_facet_ids(ids):
+        return json.dumps(ids)
 
     def get_absolute_url(self):
         return reverse("query", args=(self.pk,))
 
     def __str__(self):
         return "Query: {}, Total hits: {}".format(self.query,self.total_hits)
+
+    def _facet_pairs(self):
+
+        pairs = []
+        for facet_id in self.deserialize_facet_ids():
+            o = FacetValue.objects.get(pk=facet_id)
+
+            pairs.append((o.facet.name,o.key))
+
+        return pairs or None
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
@@ -41,7 +53,6 @@ class FacetQuery(models.Model):
                                     self._facet_pairs(),
                                     query_total=True)
 
-            self._canonize_facets()
             self.total_hits = res['total']
 
             super().save(force_insert, force_update, using, update_fields)

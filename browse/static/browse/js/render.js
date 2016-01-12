@@ -4,7 +4,7 @@
 
 "use strict";
 
-(function () {
+var facetVis = (function () {
 
     var vis = {
         choose_facet: function(facet_data) {
@@ -18,6 +18,19 @@
                 } else {
                     render_other(data, selector)
                 }
+        },
+        render_facets: function(all_facets,num_render,selector) {
+            var ranks = this.rank_facets(all_facets);
+            if (ranks.length < num_render) {
+                num_render = ranks.length
+            }
+
+            for (var i = 0;i < num_render; i++) {
+                var _id = "facet" + i
+                var svg = $("<svg id='" + _id + "' style='height:500px'></svg>" )
+                $(selector).append(svg)
+                this.render_facet(ranks[i],all_facets[ranks[i]],"#" + _id)
+            }
         },
         rank_facets: function(all_facets,total_hits) {
 
@@ -105,5 +118,5 @@
         });
     }
 
-    window.facetVis = vis
+    return vis;
 })();

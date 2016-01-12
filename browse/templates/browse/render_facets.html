@@ -2,26 +2,17 @@
 
 {% block content %}
 
-    <div id="facet">
-        <h3>Chosen facet: <span id="chosen_name0"></span></h3>
-        <svg id="svg0" style="height:500px"></svg>
-        <h3>Chosen facet: <span id="chosen_name1"></span></h3>
-        <svg id="svg1" style="height:500px"></svg>
-    </div>
+    <div id="facets"></div>
 
     <script type="application/javascript">
         var total_hits = {{ object.total_hits }}
         var facets_data = {{ view.facets_data | safe  }};
 
-        $(document).ready(function() {
+        $(function() {
 
-            var ranked_facets = facetVis.rank_facets(facets_data,total_hits);
-            console.log(ranked_facets);
 
-            $("#chosen_name0").text(ranked_facets[0]);
-            $("#chosen_name1").text(ranked_facets[1]);
-            facetVis.render_facet(ranked_facets[0],facets_data[ranked_facets[0]],"#svg0");
-            facetVis.render_facet(ranked_facets[1],facets_data[ranked_facets[1]],"#svg1");
+            facetVis.render_facets(facets_data,2,"#facets")
+
         })
 
     </script>

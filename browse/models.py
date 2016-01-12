@@ -20,7 +20,8 @@ class FacetQuery(models.Model):
                 FacetValue(facet=f,key=k,count=v) for k,v in values.items()
             ])
 
-    def deserialize_facet_ids(self):
+    @property
+    def facet_ids(self):
         return json.loads(self.query_facets) if self.query_facets else []
 
     @staticmethod
@@ -28,15 +29,16 @@ class FacetQuery(models.Model):
         return json.dumps(ids)
 
     def get_absolute_url(self):
-        return reverse("query", args=(self.pk,))
+        return reverse("render", args=(self.pk,))
 
     def __str__(self):
         return "Query: {}, Total hits: {}".format(self.query,self.total_hits)
 
-    def _facet_pairs(self):
+    @property
+    def facet_pairs(self):
 
         pairs = []
-        for facet_id in self.deserialize_facet_ids():
+        for facet_id in self.facet_ids:
             o = FacetValue.objects.get(pk=facet_id)
 
             pairs.append((o.facet.name,o.key))
@@ -50,7 +52,7 @@ class FacetQuery(models.Model):
             self.pk = o.pk
         except ObjectDoesNotExist:
             res = primo.facet_query(self.query,
-                                    self._facet_pairs(),
+                                    self.facet_pairs,
                                     query_total=True)
 
             self.total_hits = res['total']

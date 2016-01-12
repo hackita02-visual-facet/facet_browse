@@ -92,7 +92,7 @@ def render_facets(request,pk):
     except FacetQuery.DoesNotExist:
         raise Http404("Illegal query ID")
 
-    curr_facet_ids = facet_q.deserialize_facet_ids()
+    curr_facet_ids = facet_q.facet_ids
     print(request.GET)
     facetval_ids = request.GET.getlist('facet',"")
     if facetval_ids:

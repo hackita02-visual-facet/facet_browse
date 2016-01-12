@@ -14,12 +14,14 @@
         <td>{{ o.query }}</td>
         <td>
             {% if o.facet_pairs %}
+                <dl>
                 {% for fp in o.facet_pairs %}
-                    <strong>{{ fp.0 }}</strong>: {{ fp.1 }}
-                    <br>
+                    <dt>{{ fp.0 }}</dt>
+                    <dd>{{ fp.1 }}</dd>
                 {% endfor %}
+                </dl>
             {% else %}
-                N/A
+                <span class="text-muted">N/A</span>
             {% endif %}
         </td>
         <td>{{  o.total_hits }}</td>

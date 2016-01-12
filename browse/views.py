@@ -1,5 +1,6 @@
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.views.generic import CreateView, DetailView, ListView
@@ -81,7 +82,11 @@ class FacetsRenderView(DetailView):
         for facet in self.get_object().facets.all():
             fkv = fd[facet.name] = []
             for kv in facet.values.all():
-                fkv.append({'label':kv.key,'value':kv.count})
+                fkv.append({'label':kv.key,
+                            'value':kv.count,
+                            'render_link': reverse("render_facets",
+                                                   args=[self.get_object().pk]) + "?facet={}".format(kv.pk)
+                            })
 
         return fd
 

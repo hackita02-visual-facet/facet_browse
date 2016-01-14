@@ -9,6 +9,7 @@ from facet_core import primo
 class FacetQuery(models.Model):
     query = models.CharField( max_length=150)
     query_facets = models.TextField()
+    clean_query = models.ForeignKey("FacetQuery",null=True)
     total_hits = models.IntegerField()
 
     def _save_facets(self,facets):
@@ -37,13 +38,13 @@ class FacetQuery(models.Model):
     @property
     def facet_pairs(self):
 
-        pairs = []
+        pairs = set()
         for facet_id in self.facet_ids:
             o = FacetValue.objects.get(pk=facet_id)
 
-            pairs.append((o.facet.name,o.key))
+            pairs.add((o.facet.name,o.key))
 
-        return pairs or None
+        return list(pairs) or None
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
@@ -56,6 +57,8 @@ class FacetQuery(models.Model):
                                     query_total=True)
 
             self.total_hits = res['total']
+            if self.query_facets:
+                self.clean_query = FacetQuery.objects.get(query=self.query,query_facets="")
 
             super().save(force_insert, force_update, using, update_fields)
 

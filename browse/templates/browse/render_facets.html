@@ -45,20 +45,22 @@
     </div>
 </div>
 <script type="application/javascript">
-    var total_hits = {{ object.total_hits }}
+    var total_hits = {{ object.total_hits }};
     var facets_data = {{ view.facets_data | safe  }};
 
     $(function() {
+        var ranks = facetVis.rank_facets(facets_data,total_hits);
+        ranks = _.difference(ranks,unused_facets);
 
-
-        facetVis.render_facets(facets_data,2,"#facets")
-
+        render_facet_list(ranks,facets_data);
+        facetVis.render_facets(facets_data,2,"#facets",ranks);
     });
 
-    Object.keys(facets_data).forEach(function(f_name) {
-        header_id = f_name + "header";
-        content_id = f_name + "collapse";
-        panel = $('<div class="panel panel-default">').appendTo("#facet_list");
+    function render_facet_list(facets,facets_data) {
+      facets.forEach(function(f_name) {
+        var header_id = f_name + "header",
+            content_id = f_name + "collapse",
+            panel = $('<div class="panel panel-default">').appendTo("#facet_list");
 
         panel.append($('<div class="panel-heading" role="tab" id=' + header_id + '">')
                 .append($('<h4 class="panel-title">')
@@ -67,17 +69,19 @@
                         facet_pretty_names[f_name] + '    <span class="badge">' +
                         facets_data[f_name].length + '</span> </a>'))));
 
-        pbody = $('<div class="panel-body">')
+        var pbody = $('<div class="panel-body">');
         panel.append($('<div id="' + content_id +
                 '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="' + header_id + '">')
                 .append(pbody));
 
-        plist = $('<ul class="list-unstyled">').appendTo(pbody)
+        var plist = $('<ul class="list-unstyled">').appendTo(pbody);
         facets_data[f_name].forEach(function(d) {
             plist.append('<li><a href="' + d.render_link + '">' + d.label + '</a>    <span class="badge">'+
                     d.value+'</span></li>')
+            });
         })
-    })
+    }
+
 
 </script>
 

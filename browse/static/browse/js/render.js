@@ -19,8 +19,9 @@ var facetVis = (function () {
                     render_other(data, selector)
                 }
         },
-        render_facets: function(all_facets,num_render,selector) {
-            var ranks = this.rank_facets(all_facets);
+        render_facets: function(all_facets,num_render,selector,ranks) {
+            ranks = (typeof ranks === 'undefined') ? this.rank_facets(all_facets):ranks;
+
             if (ranks.length < num_render) {
                 num_render = ranks.length
             }

@@ -13,12 +13,18 @@ var facet_pretty_names = {
     lang: "שפה",
     domain: "אוסף",
     topic: "נושאים",
+    tlevel: "זמינות ",
+    local6: "מסורות",
+    local7: "ארכיון",
 
     pfilter: "pfilter",
     library: "library",
-    local7: "local7",
     local3: "local3",
     lcc: "lcc",
-    tlevel: "tlevel",
-    local6: "local6"
 }
+
+var unused_facets = [
+    "local1","lcc","topic",
+    "library","local3","pfilter",
+    "domain"
+]

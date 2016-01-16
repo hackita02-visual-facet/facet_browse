@@ -7,11 +7,11 @@
 var facetVis = (function () {
 
     var vis = {
-        render_facet: function(name,data,selector) {
-                if (name == "creationdate") {
+        render_facet: function(label,data,selector) {
+                if (label == "creationdate") {
                     render_bar(data, selector)
                 } else {
-                    render_pie(data, selector)
+                    render_treemap(data, selector)
                 }
         },
         render_facets: function(all_facets,num_render,selector,ranks) {
@@ -21,11 +21,24 @@ var facetVis = (function () {
                 num_render = ranks.length
             }
 
-            for (var i = 0;i < num_render; i++) {
-                var _id = "facet" + i
-                var svg = $("<svg id='" + _id + "' style='height:500px'></svg>" )
-                $(selector).append(svg)
+            var rendered = 0;
+            for (var i = 0;i < ranks.length; i++) {
+
+                if (rendered == num_render) {
+                    break;
+                }
+
+                if (all_facets[ranks[i]].length < 3) {
+                    continue;
+                }
+
+                $(selector).append("<h4>" + facet_pretty_names[ranks[i]] + "</h4>");
+                var _id = "facet" + i;
+
+                var _div = $("<div id='" + _id + "'></div>" );
+                $(selector).append(_div)
                 this.render_facet(ranks[i],all_facets[ranks[i]],"#" + _id)
+                rendered ++;
             }
         },
         rank_facets: function(all_facets,total_hits) {
@@ -38,12 +51,17 @@ var facetVis = (function () {
     };
 
     function render_bar(data,selector) {
+        var _id = $(selector).attr("id")+"_svg";
+        console.log(_id)
+        var svg = $("<svg id='" + _id + "' style='height:500px'></svg>" )
+        $(selector).append(svg);
+        selector = "#" + _id;
 
         //Pick the 10 most populous years
         data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
-
         //Now sort by year
         data = _.sortBy(data,"label");
+
 
         nv.addGraph(function () {
             var chart = nv.models.discreteBarChart()
@@ -96,6 +114,53 @@ var facetVis = (function () {
 
             return chart;
         });
+    }
+
+    function render_treemap(data,selector) {
+
+        var root = {
+            label:"facet",
+            children:data
+        };
+
+        function position() {
+          this.style("left", function(d) { return d.x + "px"; })
+              .style("top", function(d) { return d.y + "px"; })
+              .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+              .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; })
+              .style("font-size","15px").style("color","black");
+}
+        var margin = {top: 40, right: 10, bottom: 10, left: 10},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var color = d3.scale.category20c();
+        var logs = d3.scale.sqrt();
+
+        var treemap = d3.layout.treemap()
+            .size([width, height])
+            .sticky(true)
+            .value(function(d) { return (logs(d.value)); });
+
+        var div = d3.select(selector)
+            .style("position", "relative")
+            .style("width", (width + margin.left + margin.right) + "px")
+            .style("height", (height + margin.top + margin.bottom) + "px")
+            .style("left", margin.left + "px")
+            .style("top", margin.top + "px");
+
+      var node = div.datum(root).selectAll(".node")
+          .data(treemap.nodes)
+          .enter().append("div")
+          .attr("class", "node")
+          .call(position)
+          .style("background", function(d) { return color(d.label); })
+          .append("a").attr("href",function(d){return d.render_link;})
+          .style("color","black")
+          // .style("padding-top","15px")
+          .text(function(d) { return  d.label; });
+
+
     }
 
     return vis;

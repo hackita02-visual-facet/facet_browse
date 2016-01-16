@@ -3,12 +3,13 @@
  */
 
 var facet_pretty_names = {
+    rtype: "סוג חומר",
+    creationdate: "שנת פרסום",
     local5: "דובר/מבצע",
     local2: "הרכב מוסיקלי",
-    rtype: "סוג חומר",
     genre: "סוגה",
     creator: "מחבר/יוצר",
-    creationdate: "שנת פרסום",
+
     local1: "אולם קריאה",
     lang: "שפה",
     domain: "אוסף",

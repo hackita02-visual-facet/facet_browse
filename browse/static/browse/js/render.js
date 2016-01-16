@@ -9,9 +9,9 @@ var facetVis = (function () {
     var vis = {
         render_facet: function(name,data,selector) {
                 if (name == "creationdate") {
-                    render_barchart(data, selector)
+                    render_bar(data, selector)
                 } else {
-                    render_piechart(data, selector)
+                    render_pie(data, selector)
                 }
         },
         render_facets: function(all_facets,num_render,selector,ranks) {
@@ -37,7 +37,7 @@ var facetVis = (function () {
 
     };
 
-    function render_barchart(data,selector) {
+    function render_bar(data,selector) {
 
         //Pick the 10 most populous years
         data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
@@ -73,7 +73,7 @@ var facetVis = (function () {
         });
     }
 
-    function render_piechart(data,selector) {
+    function render_pie(data,selector) {
 
         data = _.sortBy(data,function(d) {return d.value;}).slice(0,10)
 

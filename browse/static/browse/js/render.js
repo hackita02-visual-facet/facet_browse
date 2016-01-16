@@ -9,9 +9,9 @@ var facetVis = (function () {
     var vis = {
         render_facet: function(name,data,selector) {
                 if (name == "creationdate") {
-                    render_creationdate(data, selector)
+                    render_barchart(data, selector)
                 } else {
-                    render_other(data, selector)
+                    render_piechart(data, selector)
                 }
         },
         render_facets: function(all_facets,num_render,selector,ranks) {
@@ -30,22 +30,14 @@ var facetVis = (function () {
         },
         rank_facets: function(all_facets,total_hits) {
 
-            var coverage = [];
-            _.each(all_facets,function(v,k) {
-                coverage.push( {
-                    label : k,
-                    value: _.reduce(_.pluck(v,"value"),function(memo, num){ return memo + num; }, 0)
-                    });
-            });
-
-            console.log(coverage)
-            var sorted = _.sortBy(coverage,function(o) { return -o.value;});
-            return _.pluck(sorted,"label");
+            var ranks  =  _.intersection( _.keys(facet_pretty_names),_.keys(all_facets));
+            console.log(ranks);
+            return ranks
         }
 
     };
 
-    function render_creationdate(data,selector) {
+    function render_barchart(data,selector) {
 
         //Pick the 10 most populous years
         data = _.sortBy(data,function(o) { return -o.value ;}).slice(0,10);
@@ -81,7 +73,7 @@ var facetVis = (function () {
         });
     }
 
-    function render_other(data,selector) {
+    function render_piechart(data,selector) {
 
         data = _.sortBy(data,function(d) {return d.value;}).slice(0,10)
 

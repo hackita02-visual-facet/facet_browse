@@ -7,11 +7,6 @@
 var facetVis = (function () {
 
     var vis = {
-        choose_facet: function(facet_data) {
-                return decide(facet_data);
-                //return "creationdate";
-        },
-
         render_facet: function(name,data,selector) {
                 if (name == "creationdate") {
                     render_creationdate(data, selector)
@@ -49,14 +44,6 @@ var facetVis = (function () {
         }
 
     };
-
-    function decide(facet_data) {
-            var num_facets = Object.keys(facet_data).length;
-            var idx = Math.floor(Math.random()*num_facets);
-
-            console.log("Idx: ",idx);
-            return Object.keys(facet_data)[idx];
-    }
 
     function render_creationdate(data,selector) {
 

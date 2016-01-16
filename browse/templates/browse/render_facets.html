@@ -4,18 +4,37 @@
 
 <style>
 .node {
-  border: solid 1px white;
-  font: 10px sans-serif;
-  line-height: 12px;
-  overflow: hidden;
-  position: absolute;
-  text-indent: 2px;
+    border: solid 1px white;
+    font: 10px sans-serif;
+    line-height: 12px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 2px;
 }
 
-{#.node a {#}
-{##}
-{#    color: black;#}
-{#}#}
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
 </style>
 
 <div class="row bg-info">

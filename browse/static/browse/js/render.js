@@ -9,7 +9,7 @@ var facetVis = (function () {
     var vis = {
         render_facet: function(label,data,selector) {
                 if (label == "creationdate") {
-                    render_bar(data, selector)
+                    render_bar_d3(data, selector)
                 } else {
                     render_treemap(data, selector)
                 }
@@ -83,7 +83,9 @@ var facetVis = (function () {
                         }
                     ]
                 )
-                .call(chart);
+                .call(chart)
+                .append("a")
+                .attr("href",function(d){return d.render_link;});
 
             nv.utils.windowResize(chart.update);
 
@@ -161,6 +163,72 @@ var facetVis = (function () {
           .text(function(d) { return  d.label; });
 
 
+    }
+
+    function render_bar_d3(data,selector) {
+
+        var margin = {top: 20, right: 20, bottom: 40, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(10);
+
+        var svg = d3.select(selector).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            //.attr("xmlns:xlink","http://www.w3.org/1999/xlink")
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        x.domain(data.map(function(d) { return d.label; }));
+        y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+        svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+         .selectAll("text")
+    .attr("y", 0)
+    .attr("x", 9)
+    .attr("dy", ".35em")
+    .attr("transform", "rotate(90)")
+    .style("text-anchor", "start");
+
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Count");
+
+        svg.selectAll(".bar")
+          .data(data)
+
+        .enter().append("a").attr("xlink:href", function(d){return d.render_link;}).append("rect")
+          .attr("class", "bar")
+          .attr("x", function(d) { return x(d.label); })
+          .attr("width", x.rangeBand())
+          .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); });
+
+            //.on("click",function(d) {return "window.location='" + d.render_link + "'";});
     }
 
     return vis;

@@ -169,12 +169,70 @@ var facetVis = (function () {
         var year_sorted = _.sortBy(data,function(d) {return d.label;});
         console.log(year_sorted)
 
-        var _min = year_sorted[year_sorted.length -1].label,
-            _max = year_sorted[0].label];
+        if (year_sorted[0].label == 1) {
+            year_sorted = year_sorted.slice(1,year_sorted.length);
+        }
 
-        
+        var _max = year_sorted[year_sorted.length -1].label,
+            _min = year_sorted[0].label;
 
-        render_bar_d3(year_sorted,selector)
+        console.log(_min,_max);
+
+        var diff = _max - _min;
+
+        var interval = 1000;
+        while (diff < interval) {
+            interval /= 10;
+        }
+
+        console.log(diff,interval);
+
+        var aggs = aggregate_data(year_sorted,interval);
+
+        render_bar_d3(aggs,selector)
+    }
+
+    function aggregate_data(sorted,interval) {
+
+        function _prfx(lnk) {
+            return /\/render_facet\/\d+\/\?/.exec(lnk)[0];
+        }
+
+        function _intrvl(year) {
+            return Math.floor(year/interval)*interval;
+        }
+
+        function _agg(d) {
+            var agg = {};
+            agg.label = _intrvl(d.label);
+            agg.value = d.value;
+            agg.render_link = _prfx(d.render_link) + "years=" + agg.label + "," + (agg.label+interval-1);
+            console.log(agg);
+
+            return agg;
+        }
+
+
+
+        var aggs = [];
+        var agg = {};
+        for (var i = 0;i < sorted.length;i++) {
+            var d = sorted[i];
+            if (agg.label === undefined) {
+                agg = _agg(d);
+                continue;
+            }
+
+            if (_intrvl(d.label) < (agg.label + interval)) {
+                agg.value += d.value;
+            } else {
+                aggs.push(agg);
+                agg = _agg(d)
+            }
+        }
+        aggs.push(agg);
+
+        return aggs;
     }
 
     function render_bar_d3(data,selector) {

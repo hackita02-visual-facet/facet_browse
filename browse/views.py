@@ -109,6 +109,8 @@ def render_facets(request,pk):
 
     year_range = request.GET.get('years')
     print(year_range)
+    if not year_range:
+        year_range = facet_q.year_range
 
     o = FacetQuery.objects.create(query=facet_q.query,
                                   query_facets=facetval_ids,

@@ -10,7 +10,7 @@ class FacetQuery(models.Model):
     query = models.CharField( max_length=150)
     query_facets = models.TextField()
     clean_query = models.ForeignKey("FacetQuery",null=True)
-    year_range = models.CharField(max_length=10)
+    year_range = models.CharField(max_length=10,null=True)
     total_hits = models.IntegerField()
 
     def _save_facets(self,facets):
@@ -66,8 +66,10 @@ class FacetQuery(models.Model):
                                     query_total=True)
 
             self.total_hits = res['total']
-            if self.query_facets:
-                self.clean_query = FacetQuery.objects.get(query=self.query,query_facets="")
+            if self.query_facets or self.year_range:
+                self.clean_query = FacetQuery.objects.get(query=self.query,
+                                                          year_range=None,
+                                                          query_facets="")
 
             super().save(force_insert, force_update, using, update_fields)
 

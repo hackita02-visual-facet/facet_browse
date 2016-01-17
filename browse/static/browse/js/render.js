@@ -9,7 +9,7 @@ var facetVis = (function () {
     var vis = {
         render_facet: function(label,data,selector) {
                 if (label == "creationdate") {
-                    render_bar_d3(data, selector)
+                    render_creationdate(data, selector)
                 } else {
                     render_treemap(data, selector)
                 }
@@ -165,6 +165,18 @@ var facetVis = (function () {
 
     }
 
+    function render_creationdate(data,selector) {
+        var year_sorted = _.sortBy(data,function(d) {return d.label;});
+        console.log(year_sorted)
+
+        var _min = year_sorted[year_sorted.length -1].label,
+            _max = year_sorted[0].label];
+
+        
+
+        render_bar_d3(year_sorted,selector)
+    }
+
     function render_bar_d3(data,selector) {
 
         var margin = {top: 20, right: 20, bottom: 40, left: 40},
@@ -189,8 +201,7 @@ var facetVis = (function () {
         var svg = d3.select(selector).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            //.attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-          .append("g")
+            .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
@@ -198,37 +209,36 @@ var facetVis = (function () {
         y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
         svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis)
-         .selectAll("text")
-    .attr("y", 0)
-    .attr("x", 9)
-    .attr("dy", ".35em")
-    .attr("transform", "rotate(90)")
-    .style("text-anchor", "start");
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "start");
 
         svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Count");
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Count");
 
         svg.selectAll(".bar")
-          .data(data)
-
-        .enter().append("a").attr("xlink:href", function(d){return d.render_link;}).append("rect")
-          .attr("class", "bar")
-          .attr("x", function(d) { return x(d.label); })
-          .attr("width", x.rangeBand())
-          .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return height - y(d.value); });
-
-            //.on("click",function(d) {return "window.location='" + d.render_link + "'";});
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.label); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .on("click",function(d) { window.location= d.render_link;});
     }
 
     return vis;

@@ -48,8 +48,12 @@ class FacetQuery(models.Model):
         if self.year_range:
             years = self.year_range.split(",")
 
-            pairs.add(("creationdate",
-                       "{} - {}".format(*years)))
+            if years[0] == years[1]:
+                years = years[0]
+            else:
+                years = "{} - {}".format(*years)
+
+            pairs.add(("creationdate",years))
 
         return list(pairs) or None
 

@@ -107,7 +107,12 @@ def render_facets(request,pk):
         facetval_ids.sort()
         facetval_ids = FacetQuery.serialize_facet_ids(facetval_ids)
 
-    o = FacetQuery.objects.create(query=facet_q.query,query_facets=facetval_ids)
+    year_range = request.GET.get('years')
+    print(year_range)
+
+    o = FacetQuery.objects.create(query=facet_q.query,
+                                  query_facets=facetval_ids,
+                                  year_range=year_range)
 
 
     return redirect('render',pk=o.pk)

@@ -10,6 +10,7 @@ class FacetQuery(models.Model):
     query = models.CharField( max_length=150)
     query_facets = models.TextField()
     clean_query = models.ForeignKey("FacetQuery",null=True)
+    year_range = models.CharField(max_length=10)
     total_hits = models.IntegerField()
 
     def _save_facets(self,facets):
@@ -44,12 +45,20 @@ class FacetQuery(models.Model):
 
             pairs.add((o.facet.name,o.key))
 
+        if self.year_range:
+            years = self.year_range.split(",")
+
+            pairs.add(("creationdate",
+                       "{} - {}".format(*years)))
+
         return list(pairs) or None
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
         try:
-            o = FacetQuery.objects.get(query=self.query,query_facets=self.query_facets)
+            o = FacetQuery.objects.get(query=self.query,
+                                       year_range=self.year_range,
+                                       query_facets=self.query_facets)
             self.pk = o.pk
         except ObjectDoesNotExist:
             res = primo.facet_query(self.query,

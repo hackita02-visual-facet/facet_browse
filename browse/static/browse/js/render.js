@@ -212,8 +212,6 @@ var facetVis = (function () {
             return agg;
         }
 
-
-
         var aggs = [];
         var agg = {};
         for (var i = 0;i < sorted.length;i++) {
@@ -232,7 +230,12 @@ var facetVis = (function () {
         }
         aggs.push(agg);
 
-        return aggs;
+        if (aggs.length <= 2 && interval > 1) {
+            return aggregate_data(sorted,interval/10);
+        } else {
+            return aggs;
+        }
+
     }
 
     function render_bar_d3(data,selector) {
